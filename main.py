@@ -71,6 +71,7 @@ def graficoL2(dicionarioAthlete,dicionarioComiteOlimpico):
 			y1 = np.array(homemArray)
 			y2 = np.array(mulherArray)
 			y3 = np.array(ambosArray)
+			plt.figure(figsize=(10,7))
 			plt.plot(x1, y1, "-r", label="Mulheres")
 			plt.plot(x1, y2, "-b", label="Homens")
 			plt.plot(x1, y3, "-y", label="Ambos")
@@ -82,7 +83,7 @@ def graficoL2(dicionarioAthlete,dicionarioComiteOlimpico):
 			plt.grid(axis = 'x')
 			plt.xlabel("Anos de olimpíadas do país")
 			plt.ylabel("Quantidade de atletas")
-			plt.title(paises[paisEscolhido-1])
+			plt.title("Gráfico L2 (Linhas) - " + paises[paisEscolhido-1])
 			plt.show()
 		elif(paisEscolhido==0):
 			return
@@ -142,8 +143,8 @@ def graficoB3(dicionarioAthlete,dicionarioComiteOlimpico):
 				plt.bar(posicaoDaBarraMulher, mulheres, color="#6495ED", width=larguraDaBarra, label='Mulheres')
 				plt.xlabel('Países')
 				plt.xticks([posicao+0.125 for posicao in range(len(homens))], paisesEscolhidos)
-				plt.ylabel('Quantidade de atletas')
-				plt.title('Quantidade de homens e mulheres por país na olimpíada '+jogos[identificadorJogoOlimpicoEscolhido-1])
+				plt.ylabel('Quantidade de Atletas')
+				plt.title('Gráfico B3 (Barras) - Quantidade de homens e mulheres por país na olimpíada '+jogos[identificadorJogoOlimpicoEscolhido-1])
 				plt.legend()
 				plt.show()
 
@@ -155,6 +156,27 @@ def graficoB3(dicionarioAthlete,dicionarioComiteOlimpico):
 			print ("\n" * 130)
 	else:
 		print("Nenhum país foi selecionado.")
+
+def graficoX3(dicionarioAthlete):
+	paises=[]
+	auxiliarParaTrocarNomesEixoX=[]
+	cont=0
+	for chave, valor in dicionarioAthlete.items():
+		if valor['noc'] not in paises:
+			paises.append(valor['noc'])
+			auxiliarParaTrocarNomesEixoX.append(cont+1)
+			cont=cont+1
+	listasDeIdadesPorPais=[[] for i in range(len(paises))]
+	for chave, valor in dicionarioAthlete.items():
+		if (valor['age'] not in listasDeIdadesPorPais[paises.index(valor['noc'])] and valor['age']!='NA'):
+			listasDeIdadesPorPais[paises.index(valor['noc'])].append(int(valor['age']))
+	plt.figure(figsize=(10,7))
+	plt.boxplot(listasDeIdadesPorPais)
+	plt.xticks(auxiliarParaTrocarNomesEixoX,paises)
+	plt.xlabel('Países')
+	plt.ylabel('Idade dos Atletas')
+	plt.title("Gráfico X3 (Bloxpot) - Idades dos atletas de cada país")
+	plt.show()
 
 def carregandoDados(dicionarioAthlete,dicionarioComiteOlimpico,dicionarioContinentes):
 	with open("athlete_events.xls","r") as csvarquivo:
@@ -218,8 +240,7 @@ def main():
 		elif(opcao==2):
 			graficoB3(dicionarioAthlete,dicionarioComiteOlimpico)
 		elif(opcao==3):
-			#graficoX3()
-			print("em breve X3")
+			graficoX3(dicionarioAthlete)
 		elif(opcao==4):
 			#respostaTextualT7()
 			print("em breve T7")
