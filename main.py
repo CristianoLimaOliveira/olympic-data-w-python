@@ -2,19 +2,37 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 
+def escolhendoPais(dicionarioAthlete, paises):
+	print("Escolha abaixo um país:")
+	contador=0
+	for chave, valor in dicionarioAthlete.items():
+		if valor['noc'] not in paises:
+			print("	"+str(contador+1)+" - "+valor['team'])
+			paises.append(valor['noc'])
+			contador=contador+1
+	print("	0 - Concluir")
+	print("Resposta: ", end="")
+	identificadorPaisEscolhido=int(input())
+	return identificadorPaisEscolhido
+
+def escolhendoJogoOlimpico(dicionarioAthlete, jogos):
+	print("Escolha abaixo uma olimpíada:")
+	contador=0
+	for chave, valor in dicionarioAthlete.items():
+		if valor["games"] not in jogos:
+			print("	"+str(contador+1)+" - "+valor["games"])
+			jogos.append(valor["games"])
+			contador=contador+1
+	print("	0 - Voltar")
+	print("Resposta: ", end="")
+	identificadorJogoOlimpicoEscolhido=int(input())
+	return identificadorJogoOlimpicoEscolhido
+
 def graficoL2(dicionarioAthlete,dicionarioComiteOlimpico):
 	paisEscolhido=1
 	paises=[]
 	while(paisEscolhido!=0):
-		print("Escolha abaixo um país:")
-		contador=0
-		for chave, valor in dicionarioComiteOlimpico.items():
-			print("	"+str(contador+1)+" - "+valor["region"])
-			paises.append(chave)
-			contador=contador+1
-		print("	0 - Voltar")
-		print("Resposta: ", end="")
-		paisEscolhido=int(input())
+		paisEscolhido=escolhendoPais(dicionarioAthlete, paises)
 		if(paisEscolhido>0 and paisEscolhido<=len(paises)):
 			x=[]
 			for key, value in dicionarioAthlete.items():
@@ -85,54 +103,38 @@ def graficoL2(dicionarioAthlete,dicionarioComiteOlimpico):
 			plt.ylabel("Quantidade de atletas")
 			plt.title("Gráfico L2 (Linhas) - " + paises[paisEscolhido-1])
 			plt.show()
-		elif(paisEscolhido==0):
-			return
+		elif(paisEscolhido!=0):
+			print("Valor inválido, digite um indicador válido de país.")
 		paises.clear()
 		print ("\n" * 130)
 
-def graficoB3(dicionarioAthlete,dicionarioComiteOlimpico):
+def graficoB3(dicionarioAthlete):
 	identificadorPaisEscolhido=1
 	paises=[]
 	paisesEscolhidos=[]
-	print("Escolha abaixo um país:")
-	contador=0
-	for chave, valor in dicionarioComiteOlimpico.items():
-		print("	"+str(contador+1)+" - "+valor["region"])
-		paises.append(chave)
-		contador=contador+1
-	print("	0 - Concluir")
 	while(identificadorPaisEscolhido!=0):
-		print("Resposta: ", end="")
-		identificadorPaisEscolhido=int(input())
+		identificadorPaisEscolhido=escolhendoPais(dicionarioAthlete, paises)
 		if(identificadorPaisEscolhido>0 and identificadorPaisEscolhido<=len(paises)):
 			if identificadorPaisEscolhido-1 not in paisesEscolhidos:
 				paisesEscolhidos.append(paises[identificadorPaisEscolhido-1])
 		elif(identificadorPaisEscolhido!=0):
 			print("Valor inválido, digite um indicador válido de país.")
+		paises.clear()
 	print ("\n" * 130)
 
 	if(len(paisesEscolhidos)>0):
-		identificadorJogoOlimpicoEscolhido=1
+		escolhaDeJogoOlimpico=1
 		jogos=[]
-		while(identificadorJogoOlimpicoEscolhido!=0):
-			print("Escolha abaixo uma olimpíada:")
-			contador=0
-			for chave, valor in dicionarioAthlete.items():
-				if valor["games"] not in jogos:
-					print("	"+str(contador+1)+" - "+valor["games"])
-					jogos.append(valor["games"])
-					contador=contador+1
-			print("	0 - Voltar")
-			print("Resposta: ", end="")
-			identificadorJogoOlimpicoEscolhido=int(input())
-			if(identificadorJogoOlimpicoEscolhido>0 and identificadorJogoOlimpicoEscolhido<=len(jogos)):
+		while(escolhaDeJogoOlimpico!=0):
+			escolhaDeJogoOlimpico=escolhendoJogoOlimpico(dicionarioAthlete, jogos)
+			if(escolhaDeJogoOlimpico>0 and escolhaDeJogoOlimpico<=len(jogos)):
 				homens=[0 for i in range(len(paisesEscolhidos))]
 				mulheres=[0 for i in range(len(paisesEscolhidos))]
 				for chave, valor in dicionarioAthlete.items():
 					if valor['noc'] in paisesEscolhidos:
-						if(valor['sex']=='M' and valor['games']==jogos[identificadorJogoOlimpicoEscolhido-1]):
+						if(valor['sex']=='M' and valor['games']==jogos[escolhaDeJogoOlimpico-1]):
 							homens[paisesEscolhidos.index(valor['noc'])]=homens[paisesEscolhidos.index(valor['noc'])]+1
-						if(valor['sex']=='F' and valor['games']==jogos[identificadorJogoOlimpicoEscolhido-1]):
+						if(valor['sex']=='F' and valor['games']==jogos[escolhaDeJogoOlimpico-1]):
 							mulheres[paisesEscolhidos.index(valor['noc'])]=mulheres[paisesEscolhidos.index(valor['noc'])]+1
 
 				larguraDaBarra=0.25
@@ -144,11 +146,11 @@ def graficoB3(dicionarioAthlete,dicionarioComiteOlimpico):
 				plt.xlabel('Países')
 				plt.xticks([posicao+0.125 for posicao in range(len(homens))], paisesEscolhidos)
 				plt.ylabel('Quantidade de Atletas')
-				plt.title('Gráfico B3 (Barras) - Quantidade de homens e mulheres por país na olimpíada '+jogos[identificadorJogoOlimpicoEscolhido-1])
+				plt.title('Gráfico B3 (Barras) - Quantidade de homens e mulheres por país na olimpíada '+jogos[escolhaDeJogoOlimpico-1])
 				plt.legend()
 				plt.show()
 
-			elif(identificadorJogoOlimpicoEscolhido!=0):
+			elif(escolhaDeJogoOlimpico!=0):
 				print("Valor inválido, digite um indicador válido de jogos olímpicos.")
 			jogos.clear()
 			homens.clear()
@@ -177,6 +179,39 @@ def graficoX3(dicionarioAthlete):
 	plt.ylabel('Idade dos Atletas')
 	plt.title("Gráfico X3 (Bloxpot) - Idades dos atletas de cada país")
 	plt.show()
+
+def respostaTextualT7(dicionarioAthlete):
+	escolhaDeJogoOlimpico=1
+	jogos=[]
+	jogoNaoValido=True
+	while(jogoNaoValido):
+		escolhaDeJogoOlimpico=escolhendoJogoOlimpico(dicionarioAthlete, jogos)
+		if(escolhaDeJogoOlimpico>0 and escolhaDeJogoOlimpico<=len(jogos)):
+			jogoNaoValido=False
+			nomesDosMedalhistas=[]
+			with open("athlete_events.xls","r") as csvarquivo:
+				arquivo=csv.reader(csvarquivo)
+				for linha in arquivo:
+					if (linha[1] not in nomesDosMedalhistas and linha[8]==jogos[escolhaDeJogoOlimpico-1] and linha[14]!='NA'):
+						nomesDosMedalhistas.append(linha[1])
+			csvarquivo.close()
+			print("Os medalhistas nos jogos " + jogos[escolhaDeJogoOlimpico-1] + " foram:")
+			cont=1
+			formatacao=1
+			for nomeDoAtleta in nomesDosMedalhistas:
+				if(formatacao<=4):
+					print("	"+str(cont)+' - '+nomeDoAtleta, end='')
+					cont=cont+1
+					formatacao=formatacao+1
+				else:
+					print()
+					formatacao=1
+			print()
+			input('Pressione Enter para sair ...')
+		elif(escolhaDeJogoOlimpico!=0):
+			print("Valor inválido, digite um indicador válido de jogos olímpicos.")
+		jogos.clear()
+		print ("\n" * 130)
 
 def carregandoDados(dicionarioAthlete,dicionarioComiteOlimpico,dicionarioContinentes):
 	with open("athlete_events.xls","r") as csvarquivo:
@@ -238,12 +273,11 @@ def main():
 		if(opcao==1):
 			graficoL2(dicionarioAthlete,dicionarioComiteOlimpico)
 		elif(opcao==2):
-			graficoB3(dicionarioAthlete,dicionarioComiteOlimpico)
+			graficoB3(dicionarioAthlete)
 		elif(opcao==3):
 			graficoX3(dicionarioAthlete)
 		elif(opcao==4):
-			#respostaTextualT7()
-			print("em breve T7")
+			respostaTextualT7(dicionarioAthlete)
 		elif(opcao==0):
 			return
 main()
