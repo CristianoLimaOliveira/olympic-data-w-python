@@ -90,8 +90,8 @@ def graficoL2(dicionarioAthlete,dicionarioComiteOlimpico):
 			y2 = np.array(mulherArray)
 			y3 = np.array(ambosArray)
 			plt.figure(figsize=(10,7))
-			plt.plot(x1, y1, "-r", label="Mulheres")
-			plt.plot(x1, y2, "-b", label="Homens")
+			plt.plot(x1, y1, "-b", label="Homens")
+			plt.plot(x1, y2, "-r", label="Mulheres")
 			plt.plot(x1, y3, "-y", label="Ambos")
 			plt.legend(loc="upper left")
 			plt.plot(y1, marker = 'o')
@@ -115,7 +115,7 @@ def graficoB3(dicionarioAthlete):
 	while(identificadorPaisEscolhido!=0):
 		identificadorPaisEscolhido=escolhendoPais(dicionarioAthlete, paises)
 		if(identificadorPaisEscolhido>0 and identificadorPaisEscolhido<=len(paises)):
-			if identificadorPaisEscolhido-1 not in paisesEscolhidos:
+			if paises[identificadorPaisEscolhido-1] not in paisesEscolhidos:
 				paisesEscolhidos.append(paises[identificadorPaisEscolhido-1])
 		elif(identificadorPaisEscolhido!=0):
 			print("Valor inválido, digite um indicador válido de país.")
@@ -205,6 +205,8 @@ def respostaTextualT7(dicionarioAthlete):
 					formatacao=formatacao+1
 				else:
 					print()
+					print("	"+str(cont)+' - '+nomeDoAtleta, end='')
+					cont=cont+1
 					formatacao=1
 			print()
 			input('Pressione Enter para sair ...')
